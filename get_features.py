@@ -6,6 +6,10 @@ filename = "tweets.csv"
 allTweets = [];
 fvec = defaultdict()
 #f0: percentage of capitalized text
+#f1: COMPLETELY CAPITAL text
+#f2: Capital + exclamation presence in a tweet
+#f3: nouns, adj etc
+#f4: no. of hashtags
 num_tweets = 10;
 num_features = 2;
 for i in range(num_tweets):
