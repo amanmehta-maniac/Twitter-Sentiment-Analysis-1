@@ -22,10 +22,19 @@ auth.set_access_token("887755823522340865-8F9qeIWfm6fzYPpI4mJVXXq1iuFgCcm", "VgL
 
 api = tweepy.API(auth)
 
-for status in tweepy.Cursor(api.search, q="happy",tweet_mode="extended", since_id=100, count=100).items(100):
+file = open("traindata.csv", "a")
+
+search = "sad"
+tmode = "extended"
+cnt = 100
+itemlimit = 1000
+
+for status in tweepy.Cursor(api.search, q=search,tweet_mode=tmode, since_id=1, count=cnt).items(itemlimit):
     # process status here
-    print status.entities["hashtags"]
-    print status.full_text
+    #print status.entities["hashtags"]
+    tweet = status.full_text
+    #f.write()
+    print tweet
 
 """
 public_tweets = api.home_timeline()
