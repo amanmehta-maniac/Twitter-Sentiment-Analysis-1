@@ -40,7 +40,7 @@ def getTestdata(search = "*", count=1, emojis = None):
 	    t1.printer()
 
 
-def getTraindata(bpfile = "./Datasets/Sentiment Analysis Dataset.csv", mpfile = "./Datasets/smileannotationsfinal.csv", mode = "mp" ,emojis = None):
+def getTraindata(bpfile = "Datasets/Train/Sentiment Analysis Dataset.csv", mpfile = "Datasets/Train/smileannotationsfinal.csv", mode = "mp" ,emojis = None):
 	mpdata = []
 	bpdata = []
 
@@ -51,19 +51,16 @@ def getTraindata(bpfile = "./Datasets/Sentiment Analysis Dataset.csv", mpfile = 
 
 	fp = open(file, "r")
 
-
 	for line in fp:
-		tokens = line.split[',']
+		tokens = line.split(',')
 
 		labels = tokens[2].split('|')
-		label = Emotions[labels[0]]
+		if labels[0] in Emotions:
+			label = Emotions[labels[0]]
+			t1 = Tweet(tokens[1], label)
+			t1.processTweet(emojis = emojis)
+			mpdata.append(t1)
 
-		t1 = Tweet(tokens[1], label)
-		t1.processTweet(emojis = emojis)	
-		mpdata.append(t1)
+	fp.close()
 
 	return mpdata
-
-
-emojis = getEmosentiment()
-getTestdata(emojis = emojis)

@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from spellChecker import correct
+from getFeatures import fExtract
 
 
 class Tweet:
@@ -119,6 +120,8 @@ class Tweet:
         self.__findHashtags(segment=seg_hashtags)
         if remove_swords == True:
             self.__removeSwords()
+
+        self.fvec = fExtract(self.tokens, self.processed, self.hashtags)
 
     def printer(self):
         print 'Full tweet:\n{!r} \n'.format(self.text)
