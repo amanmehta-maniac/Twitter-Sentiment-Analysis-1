@@ -1,11 +1,14 @@
 #!/usr/lib/python2.7
 
 import re
+import nltk
 from segmenter import Analyzer
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from spellChecker import correct
+
 
 class Tweet:
 
@@ -24,7 +27,9 @@ class Tweet:
         f2:
         ...
         """
+
         self.text = ftweet
+        self.score = 0
         self.label = label
         self.processed = ftweet
         self.tokens = []
@@ -49,6 +54,14 @@ class Tweet:
         newText = re.sub('\\d+', '', self.processed)
         self.processed = newText
 
+    def __getscore(self):
+    	try:
+    		S = SentimentIntensityAnalyzer()
+    	except LookupError:
+    		nltk.download('vader_lexicon')
+    		S = SentimentIntensityAnalyzer()
+    	self.score =  S.polarity_scores(self.processed)
+
     def __removeSwords(self):
         stop_words = set(stopwords.words('english'))
         stop_words.update(['.',
@@ -56,7 +69,6 @@ class Tweet:
          '"',
          "'",
          '?',
-         '!',
          ':',
          ';',
          '(',
@@ -84,13 +96,16 @@ class Tweet:
                 segmented = segTool.segment(text)
                 self.hashtags[i] = segmented
 
-    def processTweet(self, remove_nums = True, remove_swords = True, remove_url = True, seg_hashtags = True, corrections = True):
+    def processTweet(self, remove_nums = True, remove_swords = True, remove_url = True, seg_hashtags = True, corrections = False):
         if remove_url == True:
             self.__removeURL()
         if remove_nums == True:
             self.__removeNum()
+
+        self.__getscore()
         self.__tknize()
-        self.__corrSpellings()
+        if corrections == True:
+        	self.__corrSpellings()
         self.__findHashtags(segment=seg_hashtags)
         if remove_swords == True:
             self.__removeSwords()
@@ -102,3 +117,4 @@ class Tweet:
         print 'Segmented Hashtags:\n{!r} \n'.format(self.hashtags)
         print 'Feature vector for the tweet:\n{!r} \n'.format(self.fvec)
         print 'Class label of tweet:\n{} \n'.format(self.label)
+        print 'Sentiment Score:\n{} \n'.format(self.score)

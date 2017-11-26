@@ -1,10 +1,14 @@
 import csv
 import nltk
 from collections import defaultdict
+from tweet import Tweet
+
 filename = "tweets.csv"
 
 allTweets = [];
 fvec = defaultdict()
+
+def fExtract():
 
 
 #f0: percentage of capitalized text
@@ -90,16 +94,3 @@ for tweet in allTweets:
 	else:
 		fvec[i][2] = 1
 	print "new:", tweet, fvec[i][0], fvec[i][1], fvec[i][2], fvec[i][3]
-
-
-
-	# print 
-
-
-
-		
-
-
-
-
-
