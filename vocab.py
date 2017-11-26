@@ -25,7 +25,8 @@ class SentiWords:
 	def search(self, word):
 		try:
 			indx = self.__words.index(word)
+			print indx
 		except ValueError:
-			return [-1,-1]
+			return [False, 0, 0]
 
-		return [self.__posScore[indx], self.__negScore[indx]]
+		return [True, self.__posScore[indx], self.__negScore[indx]]

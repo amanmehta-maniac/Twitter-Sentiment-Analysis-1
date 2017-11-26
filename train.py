@@ -4,6 +4,7 @@
 from getData import getTraindata, getTestdata
 from vocab import SentiWords
 from sklearn.mixture import GaussianMixture
+from utils import getEmosentiment
 
 def trainMP(data, labels, n_polarity = 4, n_epochs = 3):
 	model = GaussianMixture(n_components=n_polarity, covariance_type="full", n_init=n_epochs)
@@ -21,8 +22,11 @@ def testMP(data, labels):
 def main():
 	trainData = []
 	trainLabels = []
+
 	vocab = SentiWords()
-	Data = getTraindata()
+	emojis = getEmosentiment()
+
+	Data = getTraindata(mode = "mp",emojis = emojis)
 
 	#Data = getTestdata(search="<search_term>", count=<num_of_tweets>)
 

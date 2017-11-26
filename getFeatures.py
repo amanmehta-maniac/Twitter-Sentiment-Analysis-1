@@ -9,6 +9,7 @@ allTweets = [];
 fvec = defaultdict()
 
 def fExtract():
+	
 
 
 #f0: percentage of capitalized text

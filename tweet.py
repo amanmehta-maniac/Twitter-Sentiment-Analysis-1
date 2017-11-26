@@ -2,6 +2,7 @@
 
 import re
 import nltk
+import emoji
 from segmenter import Analyzer
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
@@ -33,6 +34,7 @@ class Tweet:
         self.label = label
         self.processed = ftweet
         self.tokens = []
+        self.emojis = []
         self.hashtags = []
         self.fvec = []
 
@@ -43,8 +45,14 @@ class Tweet:
         'strip_handles' removes Twitter username handles from text if set to True.
         'reduce_len' replaces repeated character sequences of length 3 or greater with sequences of length 3 if set to True.
         """
+        self.processed = self.processed.replace("\n", " \n ")
+
         ttkzr = TweetTokenizer(strip_handles=True, reduce_len=True)
         self.tokens = ttkzr.tokenize(self.processed)
+
+        for i, token in enumerate(self.tokens):
+        	if token in emoji.UNICODE_EMOJI:
+        		self.emojis.append(token)
 
     def __removeURL(self):
         newText = re.sub('http\\S+', '', self.processed, flags=re.MULTILINE)
@@ -60,7 +68,8 @@ class Tweet:
     	except LookupError:
     		nltk.download('vader_lexicon')
     		S = SentimentIntensityAnalyzer()
-    	self.score =  S.polarity_scores(self.processed)
+    	listScore =  S.polarity_scores(self.processed)
+    	self.score = listScore['compound']
 
     def __removeSwords(self):
         stop_words = set(stopwords.words('english'))
@@ -82,7 +91,8 @@ class Tweet:
 
     def __corrSpellings(self):
         for i, token in enumerate(self.tokens):
-            self.tokens[i] = correct(token)
+        	if token not in emoji.UNICODE_EMOJI:
+        		self.tokens[i] = correct(token)
 
     def __findHashtags(self, segment = True):
         for i, token in enumerate(self.tokens):
@@ -96,7 +106,7 @@ class Tweet:
                 segmented = segTool.segment(text)
                 self.hashtags[i] = segmented
 
-    def processTweet(self, remove_nums = True, remove_swords = True, remove_url = True, seg_hashtags = True, corrections = False):
+    def processTweet(self, emojis = None ,remove_nums = True, remove_swords = True, remove_url = True, seg_hashtags = True, corrections = False):
         if remove_url == True:
             self.__removeURL()
         if remove_nums == True:
@@ -114,6 +124,7 @@ class Tweet:
         print 'Full tweet:\n{!r} \n'.format(self.text)
         print "Tweet after removing URL's and numbers:\n{!r} \n".format(self.processed)
         print 'Final tokens obtained from tweet:\n{!r} \n'.format(self.tokens)
+        print 'Final emoticons obtained from tweet:\n{!r} \n'.format(self.emojis)
         print 'Segmented Hashtags:\n{!r} \n'.format(self.hashtags)
         print 'Feature vector for the tweet:\n{!r} \n'.format(self.fvec)
         print 'Class label of tweet:\n{} \n'.format(self.label)
