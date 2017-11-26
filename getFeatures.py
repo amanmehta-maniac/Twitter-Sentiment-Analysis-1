@@ -41,7 +41,7 @@ for tweet in allTweets:
 	line_size = len(line)
 	Cap = 0
 	CAP = 0
-	exc = 0
+	exc = 1
 	nouns = 0.
 	adjectives = 0.
 	verbs = 0.
